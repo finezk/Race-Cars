@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Classes - Inheritance</title>
+    <style>
+        
+    </style>
+</head>
+	<style>
+		html {
+			background-color: #F5F5F5;
+		}
+		body {
+			width: 90%;
+		}
+		#canvas {
+			border: solid #000000 2px;
+			background-color: #666;
+			display: block;
+		}
+		.vehicle-container {
+			margin: 15px 0 15px 0;
+			width: 15%;
+			display: inline-block;
+			font-size: 16px;
+			font-family: Arial, sans-serif;
+		}
+		select {
+			margin-top: 5px;
+			width: 70%;
+			font-size: 16px;
+		}
+	</style>
+<body>
+	<canvas id="canvas" width="800" height="400">No canvas available</canvas>
+    <div class="vehicle-container">
+        <label for="vehicle1">Vehicle 1:</label> <br>
+        <select id="vehicle1">
+            <option value="car">Car</option>
+            <option value="motorbike">Motorbike</option>
+            <option value="truck">Truck</option>
+        </select>
+    </div>
+
+    <div class="vehicle-container">
+        <label for="vehicle2">Vehicle 2:</label> <br>
+        <select id="vehicle2">
+            <option value="car">Car</option>
+            <option value="motorbike">Motorbike</option>
+            <option value="truck">Truck</option>
+        </select>
+    </div>
+
+    <div class="vehicle-container">
+        <label for="vehicle3">Vehicle 3:</label> <br>
+        <select id="vehicle3">
+            <option value="car">Car</option>
+            <option value="motorbike">Motorbike</option>
+            <option value="truck">Truck</option>
+        </select>
+    </div>
+
+    <div class="vehicle-container">
+        <label for="vehicle4">Vehicle 4:</label> <br>
+        <select id="vehicle4">
+            <option value="car">Car</option>
+            <option value="motorbike">Motorbike</option>
+            <option value="truck">Truck</option>
+        </select>
+    </div>
+
+    <div class="vehicle-container">
+        <label for="vehicle5">Vehicle 5:</label> <br>
+        <select id="vehicle5">
+            <option value="car">Car</option>
+            <option value="motorbike">Motorbike</option>
+            <option value="truck">Truck</option>
+        </select>
+    </div>
+    <script>
+        class Vehicle {
+			constructor(id, enginePower, weight, colour, type) {
+				//Powers: car 3-5, truck 3-7, bike 3-6  
+				//Weights: car 3-5, truck 5-9, bike 2-4
+                this.id = id;
+				this.force = enginePower / weight;
+				this.colour = colour;
+				this.type = type;
+				this.xPos = 0;
+            }
+			
+			draw(x1, y1, shapes) {
+				shapes.forEach(shape => {
+					if (shape.type == 'circle') {
+						ctx.fillStyle = "black";
+						ctx.beginPath();
+						ctx.arc(x1 + this.xPos + shape.offsetX, y1 + shape.offsetY, shape.radius, 0, 2 * Math.PI);
+						ctx.closePath();
+						ctx.fill();
+					}
+					else if (shape.type == 'polygon') {
+						ctx.fillStyle = this.colour;
+						ctx.beginPath();
+						ctx.moveTo(x1 + this.xPos + shape.points[0].x, y1 + shape.points[0].y);
+						for (let i = 1; i < shape.points.length; i++) {
+							ctx.lineTo(x1 + this.xPos + shape.points[i].x, y1 + shape.points[i].y);
+						}
+						ctx.closePath();
+						ctx.fill();						
+					}
+				});
+			}
+			
+			checkWinner() {
+				if (this.xPos + 110 >= 720) {
+					alert(`The ${this.colour} ${this.type} has won!`);
+					cancelAnimationFrame(frame);
+				}
+			}
+			
+			race() {
+				this.xPos += this.force;
+				this.draw();
+				this.checkWinner();
+			}
+        }
+
+        class Car extends Vehicle {
+            constructor(id, colour) {
+                super(id, Math.floor(Math.random()*3+4), Math.floor(Math.random()*3+3), colour, "car");
+			}
+			
+			draw() {
+				const x1 = 50, y1 = 30 + 70 * this.id;
+				const shapes = [
+					{ type: 'polygon', points: [
+						{ x: 12, y: 0 },
+						{ x: 50, y: 0 },
+						{ x: 50, y: 15 },
+						{ x: 12, y: 15 }
+					]},
+					{ type: 'polygon', points: [
+						{ x: 0, y: 15 },
+						{ x: 60, y: 15 },
+						{ x: 60, y: 30 },
+						{ x: 0, y: 30 }
+					]},
+					{ type: 'circle', offsetX: 14, offsetY: 32, radius: 8 },
+					{ type: 'circle', offsetX: 44, offsetY: 32, radius: 8 }
+				];
+				super.draw(x1, y1, shapes);
+			}
+        }
+
+        class Motorbike extends Vehicle {
+            constructor(id, colour) {
+                super(id, Math.floor(Math.random()*2+3), Math.floor(Math.random()*3+2), colour, "motorbike");
+            }
+			
+			draw() {      
+				const x1 = 30, y1 = 30 + 70 * this.id;
+				const shapes = [
+					{ type: 'circle', offsetX: 8, offsetY: 27, radius: 8 },
+					{ type: 'circle', offsetX: 47, offsetY: 27, radius: 8 },
+					{ type: 'polygon', points: [
+						{ x: 19, y: 3 },
+						{ x: 23, y: 3 },
+						{ x: 49, y: 27 },
+						{ x: 49, y: 14 },
+						{ x: 40, y: 16 },
+						{ x: 29, y: 29 },
+						{ x: 10, y: 29 },
+						{ x: 10, y: 26 },
+						{ x: 20, y: 25 },
+						{ x: 24, y: 20 },
+						{ x: 11, y: 15 },
+						{ x: 11, y: 12 },
+						{ x: 39, y: 12 }
+					]}
+				];
+				super.draw(x1, y1, shapes);
+			}
+        }
+
+        class Truck extends Vehicle {
+            constructor(id, colour) {
+                super(id, Math.floor(Math.random()*5+3), Math.floor(Math.random()*5+5), colour, "truck");
+            }
+			draw() {
+				const x1 = 50, y1 = 30 + 70 * this.id;
+				const shapes = [
+					{ type: 'polygon', points: [
+						{ x: 0, y: 0 },
+						{ x: 60, y: 0 },
+						{ x: 60, y: 30 },
+						{ x: 0, y: 30 }
+					]},
+					{ type: 'circle', offsetX: 14, offsetY: 32, radius: 8 },
+					{ type: 'circle', offsetX: 44, offsetY: 32, radius: 8 }
+				];
+				super.draw(x1, y1, shapes);
+			}
+        }
+		
+		function drawBackground() {
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = "beige";
+			ctx.beginPath();
+				ctx.setLineDash([30, 15]);
+				ctx.moveTo(0, 80);
+				ctx.lineTo(800, 80);
+				ctx.moveTo(0, 150);
+				ctx.lineTo(800, 150);
+				ctx.moveTo(0, 220);
+				ctx.lineTo(800, 220);
+				ctx.moveTo(0, 290);
+				ctx.lineTo(800, 290);
+			ctx.stroke();
+			ctx.closePath();
+			
+			ctx.fillStyle = "white";
+			ctx.fillRect(700,20,40,340);
+			
+			ctx.lineWidth = 20;
+			ctx.strokeStyle = "black";
+			ctx.beginPath();
+				ctx.setLineDash([20, 20]);
+				ctx.moveTo(710, 20);
+				ctx.lineTo(710, 360);
+				ctx.moveTo(730, 40);
+				ctx.lineTo(730, 360);
+			ctx.stroke();
+			ctx.closePath();
+			
+			ctx.lineWidth = 5;
+			ctx.strokeStyle = "red";
+			ctx.beginPath();
+				ctx.setLineDash([]);
+				ctx.moveTo(110, 20);
+				ctx.lineTo(110, 360);
+			ctx.stroke();
+			ctx.closePath();
+			
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = "yellow";
+			ctx.beginPath();
+				ctx.moveTo(0, 10);
+				ctx.lineTo(800, 10);
+				ctx.moveTo(0, 20);
+				ctx.lineTo(800, 20);
+				ctx.moveTo(0, 360);
+				ctx.lineTo(800, 360);
+				ctx.moveTo(0, 370);
+				ctx.lineTo(800, 370);
+			ctx.stroke();
+			ctx.closePath();	
+		}
+
+		function update(vehicles) {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawBackground();
+			frame = requestAnimationFrame(function() { update(vehicles) });
+			vehicles.forEach(c => c.race());
+		}
+		
+		function startRace() {
+            const vehicles = [];
+			const myColours = ["orange","blue","green","yellow","purple"];
+            for (let i = 0; i < 5; i++) {
+                const vehicleType = document.getElementById(`vehicle${i+1}`).value;
+				if (vehicleType == 'car') {
+                    vehicles.push(new Car(i, myColours[i]));
+				}
+                else if (vehicleType == 'motorbike') {
+					vehicles.push(new Motorbike(i, myColours[i]));
+				}
+                else if (vehicleType == 'truck') {
+					vehicles.push(new Truck(i, myColours[i]));
+                }
+            }
+            update(vehicles);
+        }
+		
+        
+		//Globals:
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		var frame;
+		drawBackground();
+    </script>
+	
+	<button onclick="startRace()">Start Race</button>
+	
+</body>
+</html>

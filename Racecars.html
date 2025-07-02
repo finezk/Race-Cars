@@ -1,0 +1,145 @@
+<html>
+<head>
+	<title>JavaScript Classes</title>
+	<style>
+		html {
+			background-color: #F5F5F5;
+		}
+		#canvas {
+			border: solid #000000 2px;
+			background-color: #666;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="800" height="400">No canvas available</canvas>
+	<script>	
+		class Car {
+    #id;
+    #colour;
+    #xPos;
+
+    constructor(id, colour) {
+        this.#id = id;
+        this.#colour = colour;
+        this.#xPos = 0;     //Add a private attribute called xPos, initialised to 0
+        this.#draw();
+    }
+
+    #draw() {
+        var x1 = 62 + this.#xPos;
+        var y1 = 30 + 70 * this.#id;
+        var x2 = 50 + this.#xPos;
+        var y2 = 30 + 15 + 70 * this.#id;
+        var x3a = 50 + 14 + this.#xPos;
+        var x3b = 50 + 44 + this.#xPos;
+        var y3 = 30 + 32 + 70 * this.#id;
+        //Modify the above variables so that xPos is added to all x-coordinates
+
+        ctx.fillStyle = this.#colour;
+        ctx.fillRect(x1, y1, 38, 15);
+        ctx.fillRect(x2, y2, 60, 15);
+        ctx.fillStyle = "black";
+        ctx.beginPath();
+        ctx.arc(x3a, y3, 8, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x3b, y3, 8, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    #checkWinner() {
+        if (this.#xPos + 110 >= 720) {
+            alert(`The ${this.#colour} car has won!`);
+            cancelAnimationFrame(frame);
+        }
+    }
+
+    race() {
+        this.#xPos += Math.floor(Math.random() * 3) + 1;    //increase the xPos coordinate by a random value between 1 and 3
+        this.#draw();   //call the draw method again
+        this.#checkWinner();    //call the checkWinner method
+    }
+}
+
+		function drawBackground() {
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = "beige";
+			ctx.beginPath();
+				ctx.setLineDash([30, 15]);
+				ctx.moveTo(0, 80);
+				ctx.lineTo(800, 80);
+				ctx.moveTo(0, 150);
+				ctx.lineTo(800, 150);
+				ctx.moveTo(0, 220);
+				ctx.lineTo(800, 220);
+				ctx.moveTo(0, 290);
+				ctx.lineTo(800, 290);
+			ctx.stroke();
+			ctx.closePath();
+			
+			ctx.fillStyle = "white";
+			ctx.fillRect(700,20,40,340);
+			
+			ctx.lineWidth = 20;
+			ctx.strokeStyle = "black";
+			ctx.beginPath();
+				ctx.setLineDash([20, 20]);
+				ctx.moveTo(710, 20);
+				ctx.lineTo(710, 360);
+				ctx.moveTo(730, 40);
+				ctx.lineTo(730, 360);
+			ctx.stroke();
+			ctx.closePath();
+			
+			ctx.lineWidth = 5;
+			ctx.strokeStyle = "red";
+			ctx.beginPath();
+				ctx.setLineDash([]);
+				ctx.moveTo(110, 20);
+				ctx.lineTo(110, 360);
+			ctx.stroke();
+			ctx.closePath();
+			
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = "yellow";
+			ctx.beginPath();
+				ctx.moveTo(0, 10);
+				ctx.lineTo(800, 10);
+				ctx.moveTo(0, 20);
+				ctx.lineTo(800, 20);
+				ctx.moveTo(0, 360);
+				ctx.lineTo(800, 360);
+				ctx.moveTo(0, 370);
+				ctx.lineTo(800, 370);
+			ctx.stroke();
+			ctx.closePath();	
+		}
+
+		function update(cars) {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawBackground();
+			frame = requestAnimationFrame(function() { update(cars) });
+			cars.forEach(c => c.race());
+		}
+
+		function main() {
+			drawBackground();
+			const myColours = ["orange","blue","green","yellow","purple"];
+			const carArray = [];
+			for (let i = 0; i < 5; i++) {
+				carArray.push(new Car(i,myColours[i]));
+			}
+			document.addEventListener("click", function() { update(carArray) });
+		}
+		
+		//Globals:
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		var frame;
+		main();
+
+	</script>
+</body>
